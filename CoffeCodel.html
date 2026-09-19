@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo Cocina - CoffeeCode</title>
+  <link rel="stylesheet" href="CoffeCodel.css">
+</head>
+<body>
+
+  <h1>☕ CoffeeCode - Gestión de Cocina</h1>
+
+  <div class="container">
+    <div class="card">
+      <h2 id="form-title">Agregar Producto</h2>
+      <form id="product-form">
+        <input type="hidden" id="prod-index">
+        <input type="text" id="prod-nombre" placeholder="Nombre del platillo/bebida" required>
+        <input type="number" id="prod-precio" placeholder="Precio ($)" step="0.5" required>
+        <select id="prod-categoria">
+          <option value="Bebidas">Bebida</option>
+          <option value="Alimentos">Alimento</option>
+          <option value="Postres">Postre</option>
+        </select>
+        <button type="submit" id="btn-save">Agregar a Cocina</button>
+      </form>
+    </div>
+
+    <div class="card" style="flex-grow: 1;">
+      <h2>Menú e Inventario de Cocina</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-productos">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+
+    let listaCocina = [
+      { nombre: "Café Americano", precio: 35, categoria: "Bebidas" },
+      { nombre: "Sándwich de Jamón", precio: 55, categoria: "Alimentos" }
+    ];
+
+    const form = document.getElementById('product-form');
+    const tabla = document.getElementById('tabla-productos');
+    const inputIndex = document.getElementById('prod-index');
+    const inputNombre = document.getElementById('prod-nombre');
+    const inputPrecio = document.getElementById('prod-precio');
+    const inputCategoria = document.getElementById('prod-categoria');
+    const formTitle = document.getElementById('form-title');
+    const btnSave = document.getElementById('btn-save');
+
+    function listarProductos() {
+      tabla.innerHTML = '';
+      listaCocina.forEach((producto, index) => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${producto.nombre}</td>
+          <td>$${parseFloat(producto.precio).toFixed(2)}</td>
+          <td>${producto.categoria}</td>
+          <td>
+            <button class="btn-edit" onclick="cargarParaEditar(${index})">Editar</button>
+            <button class="btn-delete" onclick="eliminarProducto(${index})">Eliminar</button>
+          </td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const nombre = inputNombre.value;
+      const precio = parseFloat(inputPrecio.value);
+      const categoria = inputCategoria.value;
+      const index = inputIndex.value;
+
+      if (index === '') {
+
+        const nuevoProducto = { nombre, precio, categoria };
+        listaCocina.push(nuevoProducto);
+      } else {
+        
+        
+        listaCocina[index].nombre = nombre;
+        listaCocina[index].precio = precio;
+        listaCocina[index].categoria = categoria;
+        
+        inputIndex.value = '';
+        formTitle.textContent = 'Agregar Producto';
+        btnSave.textContent = 'Agregar a Cocina';
+      }
+
+      form.reset();
+      listarProductos();
+    });
+
+    function cargarParaEditar(index) {
+      const producto = listaCocina[index];
+      inputIndex.value = index;
+      inputNombre.value = producto.nombre;
+      inputPrecio.value = producto.precio;
+      inputCategoria.value = producto.categoria;
+
+      formTitle.textContent = 'Editar Producto';
+      btnSave.textContent = 'Guardar Cambios';
+    }
+
+
+    function eliminarProducto(index) {
+      if (confirm(`¿Deseas eliminar "${listaCocina[index].nombre}"?`)) {
+        listaCocina.splice(index, 1);
+        listarProductos();
+      }
+    }
+
+    listarProductos();
+  </script>
+
+</body>
+</html>
