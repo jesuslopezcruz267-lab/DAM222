@@ -1,47 +1,133 @@
-/* =========================================================
-   1. ZONA DE IMPORTACIONES
-   ========================================================= */
 
-import { View, Text, StyleSheet } from 'react-native';
+
 import { StatusBar } from 'expo-status-bar';
 
+import {
+    StyleSheet,
+    Text,
+    View,
+    ImageBackground,
+    ActivityIndicator
+} from 'react-native';
 
-/* =========================================================
-   2. ZONA PRINCIPAL [MAIN]
-   ========================================================= */
+import { useState, useEffect } from 'react';
+
+
+
 
 export function ImageBackgroundSplashScreen() {
+
+    const [showSplash, setShowSplash] = useState(true);
+
+   
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowSplash(false);
+        }, 4000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+   
+    if (showSplash) {
+        return (
+            <View style={styles.splashContainer}>
+
+                <ActivityIndicator
+                    size="large"
+                    color="#0000ff"
+                    style={{ marginTop: 20 }}
+                />
+
+                <Text style={styles.splashLoading}>
+                    Cargando...
+                </Text>
+
+            </View>
+        );
+    }
+
+   
     return (
-        <View style={styles.container}>
+        <ImageBackground
+            source={require('../assets/Tachos.jpg')}
+            style={styles.container}
+            resizeMode="cover"
+        >
 
-            <Text style={styles.titulo}>
-                Práctica: ImageBackground & SplashScreen
-            </Text>
+            <View style={styles.overlay}>
 
-            <StatusBar style="auto" />
+                <Text style={styles.titulo}>
+                    Bienvenidos
+                </Text>
 
-        </View>
+            </View>
+
+            <StatusBar style="light" />
+
+        </ImageBackground>
     );
 }
 
 
-/* =========================================================
-   3. ZONA DE ESTILOS Y POSICIONAMIENTO
-   ========================================================= */
+
 
 const styles = StyleSheet.create({
 
-    container: {
+    
+    splashContainer: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#000000',
+        width: '100%',
+    },
+
+    splashIcon: {
+        fontSize: 80,
+    },
+
+    splashTitle: {
+        color: '#fff',
+        fontSize: 40,
+        fontWeight: 'bold',
+        marginTop: 10,
+    },
+
+    splashSub: {
+        color: '#a7f3d0',
+        fontSize: 18,
+        marginTop: 5,
+    },
+
+    splashLoading: {
+        color: '#d1fae5',
+        fontSize: 12,
+        marginTop: 20,
+    },
+
+
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+    },
+
+    overlay: {
+        backgroundColor: 'rgba(0,0,0,0.6)',
         padding: 20,
+        paddingHorizontal: 40,
+        borderRadius: 15,
+        alignItems: 'center',
     },
 
     titulo: {
+        color: '#ffffff',
         fontSize: 20,
+        fontWeight: 'bold',
         textAlign: 'center',
     },
 
 });
+
