@@ -1,47 +1,68 @@
-/* =========================================================
-   1. ZONA DE IMPORTACIONES
-   ========================================================= */
-
-import { View, Text, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    ActivityIndicator as RNActivityIndicator
+} from 'react-native';
+import { useState } from 'react';
+import Inicio from './Inicio';
 
+export default function ActivityIndicator() {
+    const [cargando, setCargando] = useState(false);
+    const [pantalla, setPantalla] = useState('principal');
 
-/* =========================================================
-   2. ZONA PRINCIPAL [MAIN]
-   ========================================================= */
+    function cambiarPantalla(destino) {
+        setCargando(true);
 
-export function ActivityIndicatorKeyboardAvoidingView() {
+        setTimeout(() => {
+            setPantalla(destino);
+            setCargando(false);
+        }, 1500);
+    }
+
+    if (cargando) {
+        return (
+            <View style={styles.cargando}>
+                <RNActivityIndicator size="large" />
+                <Text style={styles.texto}>Cargando...</Text>
+            </View>
+        );
+    }
+
+    if (pantalla === 'inicio') {
+        return <Inicio onRegresar={() => cambiarPantalla('principal')} />;
+    }
+
     return (
         <View style={styles.container}>
-
-            <Text style={styles.titulo}>
-                Práctica: ActivityIndicator & KeyboardAvoidingView
-            </Text>
-
+            <Text style={styles.titulo}>Pantalla Principal</Text>
+            <Button title="Ir a Inicio" onPress={() => cambiarPantalla('inicio')} />
             <StatusBar style="auto" />
-
         </View>
     );
 }
 
-
-/* =========================================================
-   3. ZONA DE ESTILOS Y POSICIONAMIENTO
-   ========================================================= */
-
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
+        gap: 15,
     },
-
+    cargando: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     titulo: {
-        fontSize: 20,
-        textAlign: 'center',
+        fontSize: 24,
+        marginBottom: 20,
     },
-
+    texto: {
+        marginTop: 10,
+        fontSize: 16,
+    },
 });
